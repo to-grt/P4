@@ -6,16 +6,15 @@ from Game import Game
 
 ### CONSTANTS ###########################################################################
 
-WIDTH = 11
-HEIGHT = 11
+WIDTH = 7
+HEIGHT = 6
 SPRITE_SCALING = 1
+OFFSET_WIDTH = 5
 
 #########################################################################################
 
 
 class MyGame(arcade.Window):
-
-    """ Main application class. """
 
     def __init__(
         self,
@@ -23,23 +22,16 @@ class MyGame(arcade.Window):
         height,
         title,
         ):
-        """
-        Initializer
-        """
-
+       
         super().__init__(width, height, title)
 
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
 
         file_path = os.path.dirname(os.path.abspath(__file__))
         os.chdir(file_path)
         self.game = Game(WIDTH, HEIGHT)
         self.game.addPlayer(True)
 
-        # Sprite lists
+        # LISTE DES SPRITES
 
         self.coin_list = None
         self.wall_list = None
@@ -47,18 +39,16 @@ class MyGame(arcade.Window):
     def setup(self):
         """ Set up the game and initialize the variables. """
 
-        # Sprite lists
+        # LISTE DES SPRITES
 
         self.wall_list = arcade.SpriteList()
         self.coin_list = arcade.SpriteList()
         self.coins_accel = 0.2
 
-        # -- Set up the walls
-
-        # Create horizontal rows of boxes
-
-        for i in range(1, self.game.width + 1):
-            for j in range(1, self.game.height + 1):
+        # MURS + GRILLE 
+        Wall_Width = self.game.width + OFFSET_WIDTH
+        for i in range(OFFSET_WIDTH, Wall_Width + 1):
+            for j in range(0, self.game.height + 1):
 
             # Bottom edge
 
@@ -69,29 +59,20 @@ class MyGame(arcade.Window):
                 wall.center_y = j * 64 - 32
                 self.wall_list.append(wall)
 
-        # Create boxes in the middle
 
-        # Create coins
-        # Set the background color
+        # COULEUR DE FOND
 
         arcade.set_background_color(arcade.color.BLACK)
 
     def on_draw(self):
-        """
-        Render the screen.
-        """
-
-        # This command has to happen before we start drawing
-
+        
+        # DESSINE LES SPRITES
+        
         arcade.start_render()
-
-        # Draw all the sprites.
-
         self.wall_list.draw()
         self.coin_list.draw()
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
 
         coupSuivant = False
         MyGame.FallCoin(self)
@@ -104,7 +85,7 @@ class MyGame(arcade.Window):
         modifiers,
         ):
         if button == arcade.MOUSE_BUTTON_LEFT:
-            casex = x // 64 * 64 + 32  # convertit une coordonée pixel écran en coord grille de jeu
+            casex = x // 64 * 64 + 32  # CONVERTIT PIXEL ECRAN => JEU
             casey = self.game.height * 64 - 32
             coin = \
                 arcade.Sprite(r'Sprite\RedChip.png'

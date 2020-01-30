@@ -5,30 +5,25 @@ import arcade
 from Pion import Pion
 from Colonne import Colonne
 from Grille import Grille
-from Player import Player
-import HumanIA
+import Player_IA_Human
 from Game import Game
 from MyGame import MyGame
 
 
-### CONSTANTS ###########################################################################
+### CONSTANTES ###########################################################################
 #########################################################################################
 
 
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Sprite Bouncing Coins"
+SCREEN_TITLE = "Puissance 4"
 MOVEMENT_SPEED = 5
 
 #########################################################################################
 #########################################################################################
 
 
-### mettre les sprites de pions dans la classe pions aussi
-### et l'actualisation de la position du sprite aussi
-
 def main():
-    """ Main method """
 
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()

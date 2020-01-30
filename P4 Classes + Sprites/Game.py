@@ -1,7 +1,7 @@
 ### IMPORT ##########################################################################
 import random
 from Grille import Grille
-from HumanIA import Human
+from Player_IA_Human import Human
 ######################################################################################
 class Game:
 

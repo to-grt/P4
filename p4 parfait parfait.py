@@ -85,9 +85,19 @@ class Grille:
             colonne.print()
     def coupsPossibles(self):
         coups = []
-        for colonne in self.colonnes:
-            if(not colonne.isFull()):
+        compteur = 1
+        pos = len(self.colonnes) // 2
+        colonne = self.colonnes[pos]
+        if not colonne.isFull():
+            coups.append(colonne.x)
+        while(pos - compteur != -1):
+            colonne = self.colonnes[pos + compteur]
+            if not colonne.isFull():
                 coups.append(colonne.x)
+            colonne = self.colonnes[pos - compteur]
+            if not colonne.isFull():
+                coups.append(colonne.x)
+            compteur += 1
         return coups
 
 class Player:
@@ -192,8 +202,8 @@ class Human(Player):
 
 class Ia(Player):
     def play(self,lagrille,val,game):
-        if(len(game.players)>=2):   x = self.coupJudicieux(lagrille,game.players)
-        else:   x = self.miniMax(lagrille, game.players[self.id],game.players[self.id-1],-9999,9999,0)[1]
+        if(len(game.players)>2):   x = self.coupJudicieux(lagrille,game.players)
+        else:   x = self.miniMax(lagrille, game.players[0],game.players[1],-9999,9999,0)[1]
 
         game.grille.posePion(x,self)
         return True
@@ -233,8 +243,8 @@ class Game:
 
 # pour changer les dimensions , changer uniquement ces paramètres
 #pour un puissance4 classique, c'est: w = 7, h = 6
-WIDTH = 11
-HEIGHT = 8
+WIDTH = 7
+HEIGHT = 6
 
 HARD = 6
 MEDIUM = 5
@@ -250,7 +260,7 @@ canvas = None   # zone de dessin
 
 mygame = Game(WIDTH,HEIGHT)
 
-for i in range(10):  mygame.addPlayer(False)
+for i in range(1):  mygame.addPlayer(False)
 mygame.addPlayer(True)
 grille = Grille(WIDTH,HEIGHT)
 

@@ -19,9 +19,15 @@ SCREEN_HEIGHT = 632
 SCREEN_TITLE = "Sprite Bouncing Coins"
 
 MOVEMENT_SPEED = 5
-
-
-
+brokenSprites = []
+brokenSprites.append(arcade.load_spritesheet("RedChipBroken.png",sprite_width=1024,sprite_height=1024,columns=2,count=4))
+brokenSprites.append(arcade.load_spritesheet("YellowChipBroken.png",sprite_width=1024,sprite_height=1024,columns=2,count=4))
+fallingSprites = []
+fallingSprites.append(arcade.load_spritesheet("ChipFall.png",sprite_width=1024,sprite_height=1024,columns=3,count=8))
+fallingSprites.append(arcade.load_spritesheet("ChipFallYellow.png",sprite_width=1024,sprite_height=1024,columns=3,count=8))
+win = []
+win.append(arcade.load_spritesheet("ChipLose.png",sprite_width=720,sprite_height=720,columns=3,count=9))
+win.append(arcade.load_spritesheet("ChipWin.png",sprite_width=720,sprite_height=720,columns=3,count=9))
 ### mettre les sprites de pions dans la classe pions aussi
 ### et l'actualisation de la position du sprite aussi
 
@@ -33,20 +39,18 @@ class Pion:
         self.color = color
         self.id = id
         self.sprite = arcade.Sprite()
-        if(id == 2): 
-            self.fall = arcade.load_spritesheet("ChipFall.png",sprite_width=1024,sprite_height=1024,columns=3,count=8)
-            self.broken = arcade.load_spritesheet("RedChipBroken.png",sprite_width=1024,sprite_height=1024,columns=2,count=4)
-        else: 
-            self.fall = arcade.load_spritesheet("ChipFallYellow.png",sprite_width=1024,sprite_height=1024,columns=3,count=8)
-            self.broken = arcade.load_spritesheet("YellowChipBroken.png",sprite_width=1024,sprite_height=1024,columns=2,count=4)
-        self.sprite.texture = self.fall[0]
-        self.sprite.scale = 0.14
+
+        self.sprite.texture = fallingSprites[id-1][0]
+        self.sprite.scale = 0.13
         self.sprite.center_x = self.x *64 + 32
         self.sprite.center_y = 0
         self.sprite.change_x = 0
         self.sprite.change_y = 0
         self.accel = 1
         self.pose = False
+        self.gagnant = False
+        self.textI = 0
+        self.compteur = 0
             
     def __str__(self):
         return '['+str(self.x)+','+str(self.y)+']'
@@ -56,6 +60,15 @@ class Pion:
             if(pion.x == self.x + direction[0] and pion.y == self.y + direction[1]):
                 return 1 + pion.alignement(direction,pions) 
         return 1
+    def pionsAlignes(self,direction,pions):
+        alignement = []
+        alignement.append(self)
+        print(alignement)
+        print("youpi")
+        for pion in self.pionsVoisins(pions):
+            if(pion.x == self.x + direction[0] and pion.y == self.y + direction[1]):
+                return alignement + pion.pionsAlignes(direction,pions)
+        return alignement
     #retourne tous les pions voisins appartenant à "pions"
     def pionsVoisins(self,pions):
         voisins = []
@@ -70,12 +83,10 @@ class Pion:
         return derniereCase or not grille.colonnes[self.x].cases[self.y+1] == 0
     # ajouté
     def update(self,grille):
-        grille.print()
         while(not self.settled(grille)):
             grille.colonnes[self.x].cases[self.y] = 0
             self.y+=1
             grille.colonnes[self.x].cases[self.y] = self.id
-            grille.print()
     def spriteUpdate(self,grille):
         casey = grille.height - (self.sprite.center_y+32) // 64
         if(not self.pose):
@@ -88,10 +99,21 @@ class Pion:
                 self.sprite.change_y = 0
                 self.accel = 0
                 self.pose = True
-        if(not self.y <= 0):
-            if(not grille.colonnes[self.x].cases[self.y-1] == 0):
-                self.sprite.texture = self.broken[1]
-                self.sprite.scale = 0.14
+
+    def breakPions(self,grille):
+        i = 0
+        while(not self.y-i <= 0 and i<=3):
+            if(not grille.colonnes[self.x].cases[self.y-i-1] == 0):
+                self.sprite.texture = brokenSprites[self.id-1][i]
+                self.sprite.scale = 0.13
+            i+=1
+    def brille(self):
+        self.compteur += 1
+        if(self.compteur%3 == 0): self.textI +=1
+        if(self.textI >= 9): self.textI = 0
+        self.sprite.texture = win[self.id-1][self.textI]
+        self.sprite.scale = 0.15
+
 
 
 
@@ -166,6 +188,8 @@ class Player:
         self.pions = [] 
         self.id = i
         self.color = color
+        self.pionGagnant = None
+        self.dir = [0,0]
     def printPions(self):
         s = ""
         for pion in self.pions: s += str(pion)
@@ -182,6 +206,9 @@ class Player:
                 direction = [pion.x - voisin.x,  pion.y - voisin.y]
                 n = voisin.alignement(direction,self.pions)
                 if( n > 2): alignements.append(n)
+                if(n>=4): 
+                    self.pionGagnant = voisin
+                    self.dir = direction
         return alignements
     #retourne le score du coup x pour self
     def scoreParCoup(self,grille,x):
@@ -217,7 +244,10 @@ class Player:
             scores[game.Simule(self.id,coup,50)] = coup
         return scores.get(max(scores.keys()))
     def win(self):
-        return (4 in self.alignements())  
+        if(4 in self.alignements()) :
+            mespions = self.pionGagnant.pionsAlignes(self.dir,self.pions)
+            print("regardemespions",mespions)
+            for pion in mespions : pion.gagnant = True
     #ajouté
     def updatePions(self,grille):
         for pion in self.pions: pion.update(grille)
@@ -229,7 +259,7 @@ class Human(Player):
 
 class Ia(Player):
     def play(self,lagrille,val,game):
-        x = self. coupJudicieux(game.grille,game.players)
+        x = self.coupJudicieux(game.grille,game.players)
         #ajouté
         game.grille.installePion(x,self)
         print("pion posé!")
@@ -249,14 +279,14 @@ class Game:
         else :       self.players.append(Ia(playerid,color))
     def Play(self,x):
         self.turn += 1
-        self.grille.print()
         if(self.turn >= len(self.players)): self.turn = 0
         if(self.turn == len(self.players)-1):
             self.players[self.turn].play(self.grille,x,self)
         if(self.turn < len(self.players)-1):
             self.players[self.turn].play(self.grille,x,self)
         #ajouté
-        for player in self.players: player.updatePions(self.grille)
+        for player in self.players:  player.updatePions(self.grille)
+        for player in self.players:  player.win()
     def PlayR(self):
         self.turn += 1
         coups = self.grille.coupsPossibles()
@@ -325,7 +355,7 @@ class MyGame(arcade.Window):
         for i in range(1,self.game.width +1):
             for j in range(1,self.game.height+1):
             # Bottom edge
-                wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING)
+                wall = arcade.Sprite("case.png", 0.13)
                 wall.center_x = i * 64 - 32
                 wall.center_y = j * 64 - 32
                 self.wall_list.append(wall)
@@ -345,11 +375,20 @@ class MyGame(arcade.Window):
         arcade.start_render()
 
         # Draw all the sprites.
-        self.wall_list.draw()
         self.coin_list.draw()
+        animDone = True
         for player in self.game.players:
             for pion in player.pions:
                 pion.sprite.draw()
+                if(not pion.pose): animDone = False
+        if(animDone):
+            for player in self.game.players:
+                for pion in player.pions:
+                    if(pion.gagnant): pion.brille()
+                    else:   pion.breakPions(self.game.grille)
+
+        self.wall_list.draw()
+                
  
 
     def on_update(self, delta_time):
@@ -365,7 +404,6 @@ class MyGame(arcade.Window):
         if(button == arcade.MOUSE_BUTTON_LEFT):
             casex = x // 64  * 64 + 32# convertit une coordonée pixel écran en coord grille de jeu
             casey = self.game.height * 64  +32
-            coin = arcade.Sprite(":resources:images/items/coinGold.png", 0.9)
             s_x = casex
             s_y = casey
             self.game.Play(x // 64)

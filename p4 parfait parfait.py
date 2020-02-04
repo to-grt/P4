@@ -85,27 +85,27 @@ class Grille:
             colonne.print()
     def coupsPossibles(self):
         coups = []
-        compteur = 1
-        pos = len(self.colonnes) // 2
+        pos = len(self.colonnes)//2
         colonne = self.colonnes[pos]
-        if not colonne.isFull():
-            coups.append(colonne.x)
+        if(not colonne.isFull()):
+                coups.append(colonne.x)
+        compteur = 1
         while(pos - compteur != -1):
             colonne = self.colonnes[pos + compteur]
-            if not colonne.isFull():
+            if(not colonne.isFull()):
                 coups.append(colonne.x)
             colonne = self.colonnes[pos - compteur]
-            if not colonne.isFull():
+            if(not colonne.isFull()):
                 coups.append(colonne.x)
             compteur += 1
         return coups
 
 class Player:
-    def __init__(self,i,color,isia):
+    def __init__(self,i,color,isIa):
         self.pions = [] 
         self.id = i
         self.color = color
-        self.isIA = isia
+        self.isIA = isIa
     def printPions(self):
         s = ""
         for pion in self.pions: s += str(pion)
@@ -168,19 +168,21 @@ class Player:
 
     def miniMax(self, grid, joueur, adversaire,alpha,beta,depth): #score > 0 ==> ia gagne   et vice versa
         #score en paramètre c'est le score auquel comparer les scores des coupsx
-        if(joueur.win() ): return (10000-depth,-1)
-        elif( adversaire.win()): return (-10000+depth,-1)
+        if(joueur.win() ): return (10000 - depth,-1)
+        elif( adversaire.win()): return (-10000 + depth,-1)
         elif grid.coupsPossibles() == []: return(0,None)
         elif depth > DIFFICULTY: 
             joueurAlign = joueur.scoring(grid)
-            adversaireAlign = -adversaire.scoring(grid)
+            adversaireAlign = adversaire.scoring(grid)
             if(adversaireAlign >= joueurAlign): return(-adversaireAlign,None)
             else: return(joueurAlign,None)
 
         score = - 999999
         coups = grid.coupsPossibles()
+        # print("coups opssibles = ", coups)
         meilleurCoup = None
         for coup in coups:
+            # print("moncoup", coup)
             grid.posePion(coup, joueur)
             cur = -adversaire.miniMax(grid,adversaire,joueur,-beta,-alpha,depth+1)[0]
             grid.enlevePion(coup, joueur)
@@ -196,15 +198,14 @@ class Player:
 
 class Human(Player):
     def play(self,lagrille,x,game):
-        game.grille.posePion(x,self)
         if lagrille.colonnes[x].isFull(): return False
-        else: return True
+        game.grille.posePion(x,self)
+        return True
 
 class Ia(Player):
     def play(self,lagrille,val,game):
-        if(len(game.players)>2):   x = self.coupJudicieux(lagrille,game.players)
-        else:   x = self.miniMax(lagrille, game.players[0],game.players[1],-9999,9999,0)[1]
-
+        if(len(game.players)>2): x = self.coupJudicieux(lagrille,game.players)
+        else:   x = self.miniMax(lagrille, game.players[self.id],game.players[self.id-1],-9999,9999,0)[1]
         game.grille.posePion(x,self)
         return True
 
@@ -231,6 +232,7 @@ class Game:
                 else: print("l'humain a gagné !")
         else:
             if(self.turn >= len(self.players)): self.turn = 0
+            print("self.turn = ",self.turn)
             if(self.turn == len(self.players)-1):
                 coupValable = self.players[self.turn].play(self.grille,x,self)
             if(self.turn < len(self.players)-1):
@@ -251,7 +253,7 @@ MEDIUM = 5
 EASY = 4
 VERY_EASY = 3
 
-DIFFICULTY = VERY_EASY
+DIFFICULTY = MEDIUM
 SCOREMAX = 100
 test = 0
 done = False
@@ -298,9 +300,20 @@ def MouseClick(event):
     x = event.x // 100  # convertit une coordonée pixel écran en coord grille de jeu
     y = event.y // 100
     if ( (x<0) or (x>WIDTH) or (y<0) or (y>HEIGHT) ) : return
-    for player in range(len(mygame.players)):
-        mygame.Play(x)
-        Affiche()
+
+    # if mygame.players[0].isIA:
+    #     mygame.Play(x)
+    #     Affiche()
+
+    mygame.Play(x)
+    Affiche()        
+      
+
+    # for player in range(len(mygame.players)):
+    #     mygame.Play(x)
+    #     Affiche()
+        # if mygame.players[player].isIA:
+        #     break
     
 # fenetre
 window = tkinter.Tk()

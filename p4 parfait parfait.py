@@ -204,8 +204,8 @@ class Ia(Player):
     def play(self,lagrille,val,game):
         if(len(game.players)>2): x = self.coupJudicieux(lagrille,game.players)
         else:
-            if firstP == "ia": x = self.miniMax(lagrille, game.players[0],game.players[1],-9999,9999,0)[1]
-            else : x = self.miniMax(lagrille, game.players[1],game.players[0],-9999,9999,0)[1]
+            if firstP == "ia" : x = self.miniMax(lagrille, game.players[0],game.players[1],-9999,9999,0)[1]
+            elif firstP == "player" : x = self.miniMax(lagrille, game.players[1],game.players[0],-9999,9999,0)[1]
         game.grille.posePion(x,self)
         return True
 
@@ -261,12 +261,12 @@ canvas = None   # zone de dessin
 
 mygame = Game(WIDTH,HEIGHT)
 
-firstP = "ia"
+firstP = "rg"
 
 if firstP == "ia":
     for i in range(1):  mygame.addPlayer(False)
     mygame.addPlayer(True)
-else:
+elif firstP == "player":
     mygame.addPlayer(True)
     for i in range(1):  mygame.addPlayer(False)
     
@@ -302,6 +302,9 @@ def Affiche(PartieGagnee = False):
 #
 #  fnt appelée par un clic souris sur la zone de dessin
 def MouseClick(event):
+    if firstP != "ia" and firstP != "player": 
+        print("no valid first player, over.")
+        return
     global done
     window.focus_set()
     x = event.x // 100  # convertit une coordonée pixel écran en coord grille de jeu

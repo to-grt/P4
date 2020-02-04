@@ -179,10 +179,8 @@ class Player:
 
         score = - 999999
         coups = grid.coupsPossibles()
-        # print("coups opssibles = ", coups)
         meilleurCoup = None
         for coup in coups:
-            # print("moncoup", coup)
             grid.posePion(coup, joueur)
             cur = -adversaire.miniMax(grid,adversaire,joueur,-beta,-alpha,depth+1)[0]
             grid.enlevePion(coup, joueur)
@@ -205,7 +203,9 @@ class Human(Player):
 class Ia(Player):
     def play(self,lagrille,val,game):
         if(len(game.players)>2): x = self.coupJudicieux(lagrille,game.players)
-        else:   x = self.miniMax(lagrille, game.players[self.id],game.players[self.id-1],-9999,9999,0)[1]
+        else:
+            if firstP == "ia": x = self.miniMax(lagrille, game.players[0],game.players[1],-9999,9999,0)[1]
+            else : x = self.miniMax(lagrille, game.players[1],game.players[0],-9999,9999,0)[1]
         game.grille.posePion(x,self)
         return True
 
@@ -255,15 +255,22 @@ VERY_EASY = 3
 
 DIFFICULTY = MEDIUM
 SCOREMAX = 100
-test = 0
 done = False
 
 canvas = None   # zone de dessin
 
 mygame = Game(WIDTH,HEIGHT)
 
-for i in range(1):  mygame.addPlayer(False)
-mygame.addPlayer(True)
+firstP = "ia"
+
+if firstP == "ia":
+    for i in range(1):  mygame.addPlayer(False)
+    mygame.addPlayer(True)
+else:
+    mygame.addPlayer(True)
+    for i in range(1):  mygame.addPlayer(False)
+    
+
 grille = Grille(WIDTH,HEIGHT)
 
 # Dessine la grille de jeu
@@ -281,7 +288,7 @@ def Affiche(PartieGagnee = False):
         for player in mygame.players:
             for pion in player.pions:
                 xc = pion.x *100 
-                yc = pion.y *100 + test
+                yc = pion.y *100
                 canvas.create_oval(xc + 10, yc+10,xc+90 + 4,yc+90 + 4,fill = pion.color,width = "4")
 
         msg="Partie finie !"

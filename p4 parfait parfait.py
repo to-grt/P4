@@ -198,6 +198,7 @@ class Human(Player):
     def play(self,lagrille,x,game):
         if lagrille.colonnes[x].isFull(): return False
         game.grille.posePion(x,self)
+        print("Vous avez joué dans la colonne ", x + 1 , "\n")
         return True
 
 class Ia(Player):
@@ -207,6 +208,7 @@ class Ia(Player):
             if firstP == "ia" : x = self.miniMax(lagrille, game.players[0],game.players[1],-9999,9999,0)[1]
             elif firstP == "player" : x = self.miniMax(lagrille, game.players[1],game.players[0],-9999,9999,0)[1]
         game.grille.posePion(x,self)
+        print("Le coup a été joué par l'IA dans la colonne ", x + 1 , "\n")
         return True
 
 class Game:
@@ -217,6 +219,11 @@ class Game:
         self.grille = Grille(width,height)
         self.colors = ["red","yellow","green","blue","orange","violet","pink", "gray", "white","cyan","black","turquoise"]
         self.turn = 0
+
+    def checkDraw(self):
+        for colonne in self.grille.colonnes:
+            if not colonne.isFull(): return False
+        return True
 
     def addPlayer(self,isHuman):
         playerid = len(self.players)+1
@@ -229,19 +236,29 @@ class Game:
         if done:
             if self.players[self.turn - 1].win():
                 if(self.players[self.turn - 1].isIA): print("l'IA a gagné !!")
-                else: print("l'humain a gagné !")
+                else: print("Vous avez gagné !!")
+        elif self.checkDraw():
+            print("Egalité !! La partie est finie")
         else:
             if(self.turn >= len(self.players)): self.turn = 0
-            print("self.turn = ",self.turn)
             if(self.turn == len(self.players)-1):
                 coupValable = self.players[self.turn].play(self.grille,x,self)
             if(self.turn < len(self.players)-1):
                 coupValable = self.players[self.turn].play(self.grille,x,self)
+
             if self.players[self.turn].win():
-                if(self.players[self.turn].isIA): print("l'IA a gagné !!")
-                else: print("l'humain a gagné !")
+                if(self.players[self.turn].isIA): print("L'IA a gagné !!")
+                else: print("Vous avez gagné !!")
                 done = True
-            if coupValable: self.turn += 1
+    
+            if coupValable:
+                if not done:
+                    if (firstP == "ia" and self.turn == 0) or (firstP == "player" and self.turn == 1):
+                        print("C'est à vous de jouer !")
+                    else:
+                        print("C'est à l'IA de jouer ! Veuillez cliquer pour lancer la recherche du coup")
+                self.turn += 1
+            
 
 # pour changer les dimensions , changer uniquement ces paramètres
 #pour un puissance4 classique, c'est: w = 7, h = 6
@@ -253,23 +270,34 @@ MEDIUM = 5
 EASY = 4
 VERY_EASY = 3
 
-DIFFICULTY = MEDIUM
-SCOREMAX = 100
+DIFFICULTY = VERY_EASY
 done = False
 
 canvas = None   # zone de dessin
 
 mygame = Game(WIDTH,HEIGHT)
 
-firstP = "rg"
+# Pour que le joueur qui commence soit choisi aléatoirement
+rdm = random.randint(1,2)
+if rdm == 1: firstP = "ia"
+else: firstP = "player"
+
+# Pour choisir le joueur qui commence
+# firstP = "player"
 
 if firstP == "ia":
+    print("Le premiere personne à jouer est l'IA")
     for i in range(1):  mygame.addPlayer(False)
     mygame.addPlayer(True)
 elif firstP == "player":
+    print("Vous êtes la première personne à jouer")
     mygame.addPlayer(True)
     for i in range(1):  mygame.addPlayer(False)
-    
+
+if firstP == "player":
+    print("C'est à vous de jouer !")
+elif firstP == "ia":
+    print("C'est à l'IA de jouer ! Veuillez cliquer quelque part pour lancer la partie.")
 
 grille = Grille(WIDTH,HEIGHT)
 
@@ -297,37 +325,30 @@ def Affiche(PartieGagnee = False):
 
     
         canvas.update()   #force la mise a jour de la zone de dessin
-        
+
+
 ####################################################################################
 #
 #  fnt appelée par un clic souris sur la zone de dessin
 def MouseClick(event):
+    global done
+
     if firstP != "ia" and firstP != "player": 
         print("no valid first player, over.")
         return
-    global done
+
     window.focus_set()
     x = event.x // 100  # convertit une coordonée pixel écran en coord grille de jeu
     y = event.y // 100
     if ( (x<0) or (x>WIDTH) or (y<0) or (y>HEIGHT) ) : return
 
-    # if mygame.players[0].isIA:
-    #     mygame.Play(x)
-    #     Affiche()
-
     mygame.Play(x)
-    Affiche()        
-      
+    Affiche()       
 
-    # for player in range(len(mygame.players)):
-    #     mygame.Play(x)
-    #     Affiche()
-        # if mygame.players[player].isIA:
-        #     break
-    
 # fenetre
 window = tkinter.Tk()
 window.geometry(str(WIDTH*100)+"x"+str(HEIGHT*100 + 100))   # +100 car on veut rajouter un espace pour afficher les scores
+# window.geometry("1920x1080")
 window.title('Mon Super Jeu')
 window.protocol("WM_DELETE_WINDOW", lambda : window.destroy())
 window.bind("<Button-1>", MouseClick)

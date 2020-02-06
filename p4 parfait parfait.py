@@ -256,7 +256,7 @@ class Game:
                     if (firstP == "ia" and self.turn == 0) or (firstP == "player" and self.turn == 1):
                         print("C'est à vous de jouer !")
                     else:
-                        print("C'est à l'IA de jouer ! Veuillez cliquer pour lancer la recherche du coup")
+                        print("C'est à l'IA de jouer ! Elle réfléchit !")
                 self.turn += 1
             
 
@@ -270,7 +270,7 @@ MEDIUM = 5
 EASY = 4
 VERY_EASY = 3
 
-DIFFICULTY = VERY_EASY
+DIFFICULTY = EASY
 done = False
 
 canvas = None   # zone de dessin
@@ -283,7 +283,7 @@ if rdm == 1: firstP = "ia"
 else: firstP = "player"
 
 # Pour choisir le joueur qui commence
-# firstP = "player"
+# firstP = "ia"
 
 if firstP == "ia":
     print("Le premiere personne à jouer est l'IA")
@@ -342,8 +342,12 @@ def MouseClick(event):
     y = event.y // 100
     if ( (x<0) or (x>WIDTH) or (y<0) or (y>HEIGHT) ) : return
 
+    if not mygame.players[mygame.turn % len(mygame.players)].isIA:
+        mygame.Play(x)
+        Affiche()
     mygame.Play(x)
-    Affiche()       
+    Affiche()
+
 
 # fenetre
 window = tkinter.Tk()

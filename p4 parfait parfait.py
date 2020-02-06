@@ -270,12 +270,14 @@ MEDIUM = 5
 EASY = 4
 VERY_EASY = 3
 
-DIFFICULTY = EASY
+DIFFICULTY = EASY 
 done = False
 
 canvas = None   # zone de dessin
 
 mygame = Game(WIDTH,HEIGHT)
+
+nbrIA = 1
 
 # Pour que le joueur qui commence soit choisi aléatoirement
 rdm = random.randint(1,2)
@@ -287,12 +289,12 @@ else: firstP = "player"
 
 if firstP == "ia":
     print("Le premiere personne à jouer est l'IA")
-    for i in range(1):  mygame.addPlayer(False)
+    for i in range(nbrIA):  mygame.addPlayer(False)
     mygame.addPlayer(True)
 elif firstP == "player":
     print("Vous êtes la première personne à jouer")
     mygame.addPlayer(True)
-    for i in range(1):  mygame.addPlayer(False)
+    for i in range(nbrIA):  mygame.addPlayer(False)
 
 if firstP == "player":
     print("C'est à vous de jouer !")

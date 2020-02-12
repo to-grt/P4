@@ -1,0 +1,7 @@
+\\ -> /
+changement de ton menu.py
+
+GameView(arcade.View) -> GameView(MyGame)
+(Le p4 est une arcade.view)
+	-> du coup pas besoin de faire de gamesettings.txt pour les options
+

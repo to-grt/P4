@@ -1,6 +1,7 @@
 import arcade
 from arcade.gui import *
 import os
+import platform
 from MyGame import MyGame
 
 file_path = os.path.dirname(os.path.abspath(__file__))
@@ -11,6 +12,8 @@ height = 720
 width = int(ratio*height)
 menu_title_offset = int(height) // 7.2  # (= à 100 içi)
 
+if platform.system() == "Windows": slash = "\\"
+else: slash = "/"
 
 #####################################################################################################
 #####################################################################################################
@@ -101,7 +104,7 @@ class ConfirmButton(TextButton):
             f.write("\n")
             f.write(''.join([str(elem) for elem in SelectView.cpt]))
             
-        arcade.get_window().show_view(GameView())
+        #arcade.get_window().show_view(GameView())
 
     def on_release(self):
         if self.pressed:
@@ -126,22 +129,22 @@ class MenuView(arcade.View):
 
     def set_button_textures(self):
 
-        normal = "Texture/ButtonMenuJOUER1.png"
-        hover = "Texture/ButtonMenuJOUER2.png"
-        clicked = "Texture/ButtonMenuJOUER2.png"
-        locked = "Texture/ButtonMenuJOUER2.png"
+        normal = "Texture"+slash+"ButtonMenuJOUER1.png"
+        hover = "Texture"+slash+"ButtonMenuJOUER2.png"
+        clicked = "Texture"+slash+"ButtonMenuJOUER2.png"
+        locked = "Texture"+slash+"ButtonMenuJOUER2.png"
         self.JOUERtheme.add_button_textures(normal, hover, clicked, locked)
 
-        normal = "Texture/ButtonMenuOPTIONS1.png"
-        hover = "Texture/ButtonMenuOPTIONS2.png"
-        clicked = "Texture/ButtonMenuOPTIONS2.png"
-        locked = "Texture/ButtonMenuOPTIONS2.png"
+        normal = "Texture"+slash+"ButtonMenuOPTIONS1.png"
+        hover = "Texture"+slash+"ButtonMenuOPTIONS2.png"
+        clicked = "Texture"+slash+"ButtonMenuOPTIONS2.png"
+        locked = "Texture"+slash+"ButtonMenuOPTIONS2.png"
         self.OPTIONStheme.add_button_textures(normal, hover, clicked, locked)
 
-        normal = "Texture/ButtonMenuQUITTER1.png"
-        hover = "Texture/ButtonMenuQUITTER2.png"
-        clicked = "Texture/ButtonMenuQUITTER2.png"
-        locked = "Texture/ButtonMenuQUITTER2.png"
+        normal = "Texture"+slash+"ButtonMenuQUITTER1.png"
+        hover = "Texture"+slash+"ButtonMenuQUITTER2.png"
+        clicked = "Texture"+slash+"ButtonMenuQUITTER2.png"
+        locked = "Texture"+slash+"ButtonMenuQUITTER2.png"
         self.QUITTERtheme.add_button_textures(normal, hover, clicked, locked)
 
     def setup_theme(self):
@@ -172,7 +175,7 @@ class MenuView(arcade.View):
         arcade.start_render()
         arcade.draw_texture_rectangle(width // 2, height // 2,width, height, self.background)
         arcade.draw_text("Puissance 4", width/2, height/1.2,
-                         arcade.color.YELLOW, font_size=width//12, anchor_x='center', anchor_y='top', font_name=r'Font/ThaleahFat', bold=True)
+                         arcade.color.YELLOW, font_size=width//12, anchor_x='center', anchor_y='top', font_name=r"Font"+slash+"ThaleahFat", bold=True)
         super().on_draw()
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -190,39 +193,39 @@ class OptionsView(arcade.View):
     reschange = None
 
     def on_show(self):
-        self.background = arcade.load_texture(r'Texture/bg.jpg')
+        self.background = arcade.load_texture(r"Texture"+slash+"bg.jpg")
         self.setup()
 
     def set_button_textures(self):
 
-        normal = "Texture/Button16_9.png"
-        hover = "Texture/Button16_9.png"
-        clicked = "Texture/Button16_9.png"
-        locked = "Texture/Button16_9.png"
+        normal = "Texture"+slash+"Button16_9.png"
+        hover = "Texture"+slash+"Button16_9.png"
+        clicked = "Texture"+slash+"Button16_9.png"
+        locked = "Texture"+slash+"Button16_9.png"
         self.widetheme.add_button_textures(normal, hover, clicked, locked)
 
-        normal = "Texture/Button4_3.png"
-        hover = "Texture/Button4_3.png"
-        clicked = "Texture/Button4_3.png"
-        locked = "Texture/Button4_3.png"
+        normal = "Texture"+slash+"Button4_3.png"
+        hover = "Texture"+slash+"Button4_3.png"
+        clicked = "Texture"+slash+"Button4_3.png"
+        locked = "Texture"+slash+"Button4_3.png"
         self.oldtheme.add_button_textures(normal, hover, clicked, locked)
 
-        normal = "Texture/Button1080.png"
-        hover = "Texture/Button1080.png"
-        clicked = "Texture/Button1080.png"
-        locked = "Texture/Button1080.png"
+        normal = "Texture"+slash+"Button1080.png"
+        hover = "Texture"+slash+"Button1080.png"
+        clicked = "Texture"+slash+"Button1080.png"
+        locked = "Texture"+slash+"Button1080.png"
         self.FHDtheme.add_button_textures(normal, hover, clicked, locked)
 
-        normal = "Texture/Button720.png"
-        hover = "Texture/Button720.png"
-        clicked = "Texture/Button720.png"
-        locked = "Texture/Button720.png"
+        normal = "Texture"+slash+"Button720.png"
+        hover = "Texture"+slash+"Button720.png"
+        clicked = "Texture"+slash+"Button720.png"
+        locked = "Texture"+slash+"Button720.png"
         self.HDtheme.add_button_textures(normal, hover, clicked, locked)
 
-        normal = "Texture/Button480.png"
-        hover = "Texture/Button480.png"
-        clicked = "Texture/Button480.png"
-        locked = "Texture/Button480.png"
+        normal = "Texture"+slash+"Button480.png"
+        hover = "Texture"+slash+"Button480.png"
+        clicked = "Texture"+slash+"Button480.png"
+        locked = "Texture"+slash+"Button480.png"
         self.SDtheme.add_button_textures(normal, hover, clicked, locked)
 
     def setup_theme(self):
@@ -259,11 +262,11 @@ class OptionsView(arcade.View):
         arcade.draw_texture_rectangle(width // 2, height // 2,
                                       width, height, self.background)
         arcade.draw_text("Options", width/2, height/1.2,
-                         arcade.color.YELLOW, font_size=width//12, anchor_x='center', anchor_y='top', font_name=r'Font/ThaleahFat', bold=True)
+                         arcade.color.YELLOW, font_size=width//12, anchor_x='center', anchor_y='top', font_name=r"Font"+slash+"ThaleahFat", bold=True)
         arcade.draw_text("Ratio", width/2, height/1.6,
-                         arcade.color.YELLOW, font_size=width//16, anchor_x='center', anchor_y='top', font_name=r'Font/ThaleahFat', bold=True)
+                         arcade.color.YELLOW, font_size=width//16, anchor_x='center', anchor_y='top', font_name=r"Font"+slash+"ThaleahFat", bold=True)
         arcade.draw_text("Resolution", width/2, height/2.6,
-                         arcade.color.YELLOW, font_size=width/16, anchor_x='center', anchor_y='top', font_name=r'Font/ThaleahFat', bold=True)
+                         arcade.color.YELLOW, font_size=width/16, anchor_x='center', anchor_y='top', font_name=r"Font"+slash+"ThaleahFat", bold=True)
         super().on_draw()
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -297,35 +300,38 @@ class OptionsView(arcade.View):
 class SelectView(arcade.View):
     background = None
     cpt = [0, 0, 0, 0]
-
+    def __init__(self):
+        super().__init__()
+        self.Fades = False
+        self.transparency = 0
     def on_show(self):
-        self.background = arcade.load_texture(r'Texture/bg.jpg')
+        self.background = arcade.load_texture(r"Texture"+slash+"bg.jpg")
         self.setup()
 
     def set_button_textures(self):
 
-        normal = "Texture/AddButton.png"
-        hover = "Texture/AddButton.png"
-        clicked = "Texture/AddButton.png"
-        locked = "Texture/AddButton.png"
+        normal = "Texture"+slash+"AddButton.png"
+        hover = "Texture"+slash+"AddButton.png"
+        clicked = "Texture"+slash+"AddButton.png"
+        locked = "Texture"+slash+"AddButton.png"
         self.SELECTtheme.add_button_textures(normal, hover, clicked, locked)
 
-        normal = "Texture/IASelectButtonTexture.png"
-        hover = "Texture/IASelectButtonTexture.png"
-        clicked = "Texture/IASelectButtonTexture.png"
-        locked = "Texture/IASelectButtonTexture.png"
+        normal = "Texture"+slash+"IASelectButtonTexture.png"
+        hover = "Texture"+slash+"IASelectButtonTexture.png"
+        clicked = "Texture"+slash+"IASelectButtonTexture.png"
+        locked = "Texture"+slash+"IASelectButtonTexture.png"
         self.SELECTIAtheme.add_button_textures(normal, hover, clicked, locked)
 
-        normal = "Texture/JOUEURSelectButtonTexture.png"
-        hover = "Texture/JOUEURSelectButtonTexture.png"
-        clicked = "Texture/JOUEURSelectButtonTexture.png"
-        locked = "Texture/JOUEURSelectButtonTexture.png"
+        normal = "Texture"+slash+"JOUEURSelectButtonTexture.png"
+        hover = "Texture"+slash+"JOUEURSelectButtonTexture.png"
+        clicked = "Texture"+slash+"JOUEURSelectButtonTexture.png"
+        locked = "Texture"+slash+"JOUEURSelectButtonTexture.png"
         self.SELECTJtheme.add_button_textures(normal, hover, clicked, locked)
 
-        normal = "Texture/ButtonMenuVALIDER.png"
-        hover = "Texture/ButtonMenuVALIDER.png"
-        clicked = "Texture/ButtonMenuVALIDER.png"
-        locked = "Texture/ButtonMenuVALIDER.png"
+        normal = "Texture"+slash+"ButtonMenuVALIDER.png"
+        hover = "Texture"+slash+"ButtonMenuVALIDER.png"
+        clicked = "Texture"+slash+"ButtonMenuVALIDER.png"
+        locked = "Texture"+slash+"ButtonMenuVALIDER.png"
         self.CONFIRMtheme.add_button_textures(normal, hover, clicked, locked)
 
     def setup_theme(self):
@@ -378,17 +384,19 @@ class SelectView(arcade.View):
     def setup(self):
         self.setup_theme()
         self.set_add_buttons()
+        self.transparency = 0
 
     def on_draw(self):
         global height
         global width
+
         arcade.start_render()
         arcade.draw_texture_rectangle(width // 2, height // 2,
                                       width, height, self.background)
         arcade.draw_text("Menu de Selection", width//2, height // 1.1,
-                         arcade.color.YELLOW, font_size=width//14, anchor_x='center', anchor_y='top', font_name=r'Font/ThaleahFat', bold=True)
+                         arcade.color.YELLOW, font_size=width//14, anchor_x='center', anchor_y='top', font_name=r"Font"+slash+"ThaleahFat", bold=True)
         arcade.draw_texture_rectangle(width // 2, height // 2,
-                                      width // 1.5, height // 2, arcade.load_texture(r'Texture/CadreSelectPersoFIN.png'))
+                                      width // 1.5, height // 2, arcade.load_texture(r"Texture"+slash+"CadreSelectPersoFIN.png"))
         self.button_list[len(self.button_list)-1].draw()
         if self.button_list:
 
@@ -397,7 +405,6 @@ class SelectView(arcade.View):
                 for idbutton in range(len(self.button_list[idBTuple])):
 
                     if self.button_list[idBTuple][idbutton].pressed:
-
                         if self.cpt[idBTuple] != 2:
                             self.cpt[idBTuple] += 1
                         else:
@@ -406,17 +413,22 @@ class SelectView(arcade.View):
                         self.button_list[idBTuple][idbutton].pressed = False
                         break
                 self.button_list[idBTuple][self.cpt[idBTuple]].draw()
+        if(self.Fades): self.transitionEffect()
             
-
+    def transitionEffect(self):
+        self.transparency += 10
+        print(self.transparency)
+        arcade.draw_rectangle_filled(0,0,width*2, height*2,(0,0,0,self.transparency))
+        if(self.transparency >= 245): arcade.get_window().show_view(GameView())
+  
     def on_mouse_press(self, x, y, button, modifiers):
         if button == arcade.MOUSE_BUTTON_LEFT:
             buttonpressed = check_mouse_press_for_tuplebuttons(
                 x, y, self.button_list)
             if buttonpressed:
                 buttonpressed.on_press()
-            
-            
-
+                self.Fades = True
+    
     def on_key_press(self, key, _modifiers):
         if key == arcade.key.ESCAPE:
             arcade.get_window().show_view(MenuView())
@@ -428,10 +440,23 @@ class GameView(MyGame):
     #     global width
     #     arcade.start_render()
     #     arcade.draw_texture_rectangle(width // 2, height // 2,width, height, self.background)
-
+    def __init__(self):
+        super().__init__(width,height)
+        self.transparency = 255
+        self.canPlay = False
     def on_key_press(self, key, _modifiers):
         if key == arcade.key.ESCAPE:
             arcade.get_window().show_view(SelectView())
+    def transitionEffect(self):
+        self.transparency -= 10
+        print(self.transparency)
+        arcade.draw_rectangle_filled(0,0,width*2, height*2,(0,0,0,self.transparency))
+        if(self.transparency <= 10): self.canPlay = True
+    def on_draw(self):
+        super().on_draw()
+        if(not self.canPlay): self.transitionEffect()
+
+        
 
   #  def on_mouse_press(self, x, y, button, modifiers):
   #      if button == arcade.MOUSE_BUTTON_LEFT:

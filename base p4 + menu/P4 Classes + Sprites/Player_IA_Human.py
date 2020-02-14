@@ -11,7 +11,7 @@ class Player:
         for pion in self.pions: s += str(pion)
         print(s)
     def newPion(self,x,y):
-        self.pions.append(Pion(x,y,self.id,self.color))
+        self.pions.append(Pion(x,y,self.id))
     def removePion(self,x,y):
         self.pions = [pion for pion in self.pions if not(pion.x == x and pion.y == y)]
     #retourne une liste des alignements
@@ -64,6 +64,8 @@ class Player:
             mespions = self.pionGagnant.pionsAlignes(self.dir,self.pions)
             print("regardemespions",mespions)
             for pion in mespions : pion.gagnant = True
+            return True
+        return False
     #ajouté
     def updatePions(self,grille):
         for pion in self.pions: pion.update(grille)

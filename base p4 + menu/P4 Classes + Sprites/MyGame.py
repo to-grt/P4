@@ -6,26 +6,30 @@ from Game import Game
 
 from Pion import Pion
 from Player_IA_Human import Ia, Human, Player
+import platform
 ### CONSTANTS ###########################################################################
 
+
+if platform.system() == "Windows": slash = "\\"
+else: slash = "/"
 WIDTH = 7
 HEIGHT = 6
 SPRITE_SCALING = 1
 OFFSET_WIDTH = 5
-SCREEN_WIDTH = 1080
-SCREEN_HEIGHT = 720
+
 #########################################################################################
 
 
 class MyGame(arcade.View):
     """ Main application class. """
 
-    def __init__(self):
+    def __init__(self,screenwidth,screenheight):
         """
         Initializer
         """
         super().__init__()
-
+        self.screenW = screenwidth
+        self.screenH = screenheight
         # Set the working directory (where we expect to find files) to the same
         # directory this .py file is in. You can leave this out of your own
         # code, but it is needed to easily run the examples using "python -m"
@@ -36,23 +40,22 @@ class MyGame(arcade.View):
         self.game.addPlayer(True)
         self.game.addPlayer(False)
         # Sprite lists
-        self.wall_list = arcade.SpriteList()
-        for i in range(1,WIDTH +1):
-            for j in range(1,HEIGHT+1):
-            # Bottom edge
-                wall = arcade.Sprite("case.png", 0.13)
-                wall.center_x = i * 64 - 32  +  ((SCREEN_WIDTH )//2 - (WIDTH*64 // 2))
-                wall.center_y = j * 64 - 32
-                self.wall_list.append(wall)
-
+        self.wall = arcade.Sprite(r"Texture"+slash+"CasierP4.png",0.645)
+        self.wall.center_x =  self.wall.width/2 + ((self.screenW )//2 - (WIDTH*64 // 2))
+        self.wall.center_y =   self.wall.height/2
+        self.base = arcade.Sprite(r"Sprite"+slash+"Base1.png",0.5)
+        self.base.center_x = self.screenW - self.base.width/2 
+        self.base.center_y =   self.base.height/2
+        return self.screenW
     def on_draw(self):
         """
         Render the screen.
         """
-        self.background = arcade.load_texture(r'Texture/bg.jpg')
+        self.background = arcade.load_texture(r"Texture"+slash+"bg.jpg")
         # This command has to happen before we start drawing
         arcade.start_render()
-
+        
+        self.base.draw()
         # Draw all the sprites.
         animDone = True
         for player in self.game.players:
@@ -65,8 +68,8 @@ class MyGame(arcade.View):
                     if(pion.gagnant): pion.brille()
                     else:   pion.breakPions(self.game.grille)
 
-        self.wall_list.draw()
-                
+        self.wall.draw()
+        
  
 
     def on_update(self, delta_time):
@@ -82,7 +85,7 @@ class MyGame(arcade.View):
             
     def on_mouse_press(self,x,y,button,modifiers):
         if(button == arcade.MOUSE_BUTTON_LEFT):
-            realx = x  -  ((SCREEN_WIDTH )//2 - (WIDTH*64 // 2))
+            realx = x  -  ((self.screenW )//2 - (WIDTH*64 // 2))
             casex = (realx // 64)  * 64 - 32 # convertit une coordonée pixel écran en coord grille de jeu
             casey = self.game.height * 64  +32
             s_x = casex

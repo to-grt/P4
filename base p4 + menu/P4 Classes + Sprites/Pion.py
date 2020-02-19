@@ -18,6 +18,7 @@ HEIGHT = 6
 WIDTH = 7
 SCREEN_WIDTH = 1080
 SCREEN_HEIGHT = 720
+SHIFT = 0
 ratio = 0
 height = 0
 width = 0
@@ -35,7 +36,7 @@ class Pion:
 
         self.sprite.texture = fallingSprites[id-1][0]
         self.sprite.scale = 0.19
-        self.sprite.center_x = self.x *64 + 32  +  ((width )//2 - (WIDTH*64 // 2)) + 11
+        self.sprite.center_x = self.x *64 + 32  +  ((width )//2 - (WIDTH*64 // 2)) + 11 + SHIFT
         self.sprite.center_y = 0
         self.sprite.change_x = 0
         self.sprite.change_y = 0

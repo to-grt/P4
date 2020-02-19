@@ -1,11 +1,14 @@
 from Pion import Pion
+import copy
 class Player:
-    def __init__(self,i,color):
+    def __init__(self,i,color,isHuman):
         self.pions = [] 
         self.id = i
         self.color = color
         self.pionGagnant = None
         self.dir = [0,0]
+        self.a = []
+        self.isHuman = isHuman
     def printPions(self):
         s = ""
         for pion in self.pions: s += str(pion)
@@ -69,11 +72,14 @@ class Player:
     #ajouté
     def updatePions(self,grille):
         for pion in self.pions: pion.update(grille)
+    def updateA(self):
+        self.a = self.alignements()
 
 class Human(Player):
     def play(self,lagrille,x,game):
         #ajouté
         game.grille.installePion(x,self)
+        
 
 class Ia(Player):
     def play(self,lagrille,val,game):

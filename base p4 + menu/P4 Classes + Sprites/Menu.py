@@ -10,7 +10,6 @@ os.chdir(file_path)
 ratio = 16/9
 height = 720
 width = int(ratio*height)
-menu_title_offset = int(height) // 7.2  # (= à 100 içi)
 
 if platform.system() == "Windows": slash = "\\"
 else: slash = "/"
@@ -157,13 +156,10 @@ class MenuView(arcade.View):
     def set_buttons(self):
         global height
         global width
-        global menu_title_offset
         self.button_list.append(PlayButton(
             self, width // 2, height // 2, width // 3, height // 8.4, theme=self.JOUERtheme))
-        self.button_list.append(OptionsButton(self, width // 2, height // 2 -
-                                              menu_title_offset, width // 3, height // 8.4, theme=self.OPTIONStheme))
-        self.button_list.append(QuitButton(self, width // 2, height // 2 - 2 *
-                                           menu_title_offset, width // 3, height // 8.4, theme=self.QUITTERtheme))
+        self.button_list.append(OptionsButton(self, width // 2, height // 2 - int(height) // 7.2, width // 3, height // 8.4, theme=self.OPTIONStheme))
+        self.button_list.append(QuitButton(self, width // 2, height // 2 - 2*(int(height) // 7.2), width // 3, height // 8.4, theme=self.QUITTERtheme))
 
     def setup(self):
         self.setup_theme()
@@ -427,7 +423,8 @@ class SelectView(arcade.View):
                 x, y, self.button_list)
             if buttonpressed:
                 buttonpressed.on_press()
-                self.Fades = True
+                if type(buttonpressed) == ConfirmButton:
+                    self.Fades = True
     
     def on_key_press(self, key, _modifiers):
         if key == arcade.key.ESCAPE:
@@ -492,9 +489,11 @@ def check_mouse_press_for_tuplebuttons(x, y, button_list):
     for subbuttonlist in button_list:
         if type(subbuttonlist) == tuple:
             buttonpressed = check_mouse_press_for_buttons(x, y, subbuttonlist)
+                
         else:
             buttonpressed = check_button(x, y, subbuttonlist)
-    return buttonpressed
+        if buttonpressed:
+            return buttonpressed
             
         
     
@@ -508,14 +507,12 @@ def main():
     global ratio
     global height
     global width
-    global menu_title_offset
     if not os.path.exists('gamesettings.txt'):
         wsettings(16/9, 720)
     with open("gamesettings.txt", "r") as f:
         ratio = float(f.readline())
         height = int(f.readline())
         width = int(ratio*height)
-        menu_title_offset = int(height) // 7.2
     window = arcade.Window(width, height, "Puissance 4")
     window.show_view(MenuView())
     arcade.run()
